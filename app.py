@@ -32,10 +32,10 @@ X = df[features]
 # Predecir probabilidad de crecimiento
 df["prob_crecimiento"] = model.predict_proba(X)[:, 1]
 
-# Estimar precio futuro (ejemplo simple)
-df["price_estimado"] = df["price_usd"] * (1 + df["prob_crecimiento"])
+# Precio estimado más realista (crecimiento objetivo: 30%)
+df["price_estimado"] = df["price_usd"] * (1 + df["prob_crecimiento"] * 0.30)
 
-# Filtrar criptos de baja capitalización y con alta probabilidad
+# Filtro: baja capitalización y alta probabilidad
 umbral_lowcap = df["market_cap"].quantile(0.25)
 
 recomendadas = df[
@@ -46,17 +46,26 @@ recomendadas = df[
 # Ordenar por mayor probabilidad
 recomendadas = recomendadas.sort_values("prob_crecimiento", ascending=False)
 
+# Renombrar columnas para visualización
+tabla_mostrar = recomendadas[[
+    "id",
+    "price_usd",
+    "market_cap",
+    "total_volume",
+    "prob_crecimiento",
+    "price_estimado"
+]].head(10).rename(columns={
+    "id": "Criptomoneda",
+    "price_usd": "Precio Actual (USD)",
+    "market_cap": "Capitalización de Mercado",
+    "total_volume": "Volumen (24h)",
+    "prob_crecimiento": "Prob. de Crecimiento",
+    "price_estimado": "Precio Estimado"
+})
+
 # Mostrar resultados
 st.subheader("🔝 Top 10 Criptos Recomendadas para Invertir")
-st.dataframe(
-    recomendadas[[
-        "id",
-        "price_usd",
-        "market_cap",
-        "prob_crecimiento",
-        "price_estimado"
-    ]].head(10)
-)
+st.dataframe(tabla_mostrar)
 
 # Footer
 st.markdown("---")
