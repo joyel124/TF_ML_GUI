@@ -42,4 +42,4 @@ st.download_button(
 )
 
 st.markdown("---")
-st.caption("🚀 Desarrollado para Perú C-Inversiones | Modelo de IA con RandomForest")
+st.markdown("🔗 [GitHub](https://github.com/joyel124/TF_ML_GUI)")
